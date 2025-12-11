@@ -724,10 +724,10 @@
 
           <div class="btn-row">
             <button type="button" class="btn btn-primary" onclick="calculateScore()">
-              🧠 Tính điểm FoMO &amp; lưu lịch sử
+               Tính điểm FoMO &amp; lưu lịch sử
             </button>
             <button type="button" class="btn btn-ghost" onclick="resetForm()">
-              🔄 Làm lại từ đầu
+               Làm lại từ đầu
             </button>
           </div>
         </form>
