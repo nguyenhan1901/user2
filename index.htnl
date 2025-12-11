@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thang điểm FoMO sớm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* ===== Font & màu chủ đạo ===== */
+    :root {
+      --bg-gradient: linear-gradient(145deg, #0f172a, #1d4ed8);
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-soft: #eff6ff;
+      --primary-dark: #1d4ed8;
+      --accent: #f97316;
+      --text-main: #0f172a;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --danger: #ef4444;
+      --success: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1d4ed8 0, #020617 50%, #020617 100%);
+      color: var(--text-main);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .page-shell {
+      flex: 1;
+      max-width: 1100px;
+      margin: 16px auto;
+      padding: 12px;
+    }
+
+    /* ===== Header đẹp đẹp ===== */
+    .hero {
+      border-radius: 24px;
+      padding: 18px 20px;
+      background: radial-gradient(circle at top left, #60a5fa 0, #1e293b 45%, #020617 100%);
+      color: #f9fafb;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.6);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(96, 165, 250, 0.35) 0, transparent 55%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .hero-title {
+      font-size: clamp(22px, 4vw, 28px);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: linear-gradient(to right, #f9fafb, #bfdbfe, #e5e7eb);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 14px;
+      max-width: 520px;
+      color: #e5e7eb;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(226, 232, 240, 0.3);
+      backdrop-filter: blur(6px);
+      background: rgba(15, 23, 42, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+    }
+
+    .hero-metric {
+      font-size: 12px;
+      color: #e5e7eb;
+    }
+
+    /* ===== Card chính ===== */
+    .card {
+      background: radial-gradient(circle at top, #f9fafb 0, #ffffff 40%, #f3f4f6 100%);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.3);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .tabs {
+      display: inline-flex;
+      border-radius: 999px;
+      background: #e5e7eb;
+      padding: 3px;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      border-radius: 999px;
+      border: none;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #4b5563;
+      background: transparent;
+      transition: all 0.18s ease;
+      min-width: 90px;
+    }
+
+    .tab.active {
+      background: #ffffff;
+      color: var(--primary-dark);
+      box-shadow: 0 3px 8px rgba(148, 163, 184, 0.65);
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .mini-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      border: 1px solid #c7d2fe;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mini-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    /* ===== Phần thông tin lớp ===== */
+    .info-row {
+      margin: 10px 0 14px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      border: 1px solid #bfdbfe;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-row label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1f2933;
+    }
+
+    .info-input {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #cbd5f5;
+      min-width: 90px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .info-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    }
+
+    .info-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ===== Bảng câu hỏi ===== */
+    h2 {
+      font-size: 16px;
+      margin: 18px 0 4px;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    h2 span.badge-section {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+      font-size: 13px;
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 8px 6px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f3f4f6;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    td.center {
+      text-align: center;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f9fafb;
+    }
+
+    tbody tr:hover {
+      background: #eef2ff;
+    }
+
+    /* ===== Ghi chú thang điểm ===== */
+    .scale-note {
+      font-size: 12px;
+      color: #4b5563;
+      background: #f9fafb;
+      border-radius: 14px;
+      padding: 10px 12px;
+      border: 1px dashed var(--border);
+      margin: 6px 0 16px;
+    }
+
+    .scale-note strong {
+      color: #111827;
+    }
+
+    /* ===== Nút ===== */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: none;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: radial-gradient(circle at top left, #60a5fa, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.5);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 35px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-ghost {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #e5e7eb;
+    }
+
+    .btn-ghost:hover {
+      background: #e5e7eb;
+      transform: translateY(-1px);
+    }
+
+    /* ===== Kết quả ===== */
+    .result {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top left, #e0f2fe, #eff6ff);
+      border: 1px solid #bfdbfe;
+      display: none;
+    }
+
+    .result-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .result-title span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+    }
+
+    .result-score {
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 4px;
+      border: 1px solid transparent;
+    }
+
+    .badge-low {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #bbf7d0;
+    }
+
+    .badge-medium {
+      background: #fef9c3;
+      color: #854d0e;
+      border-color: #fef08a;
+    }
+
+    .badge-high {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    .badge-pill-small {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: #4b5563;
+    }
+
+    /* ===== Lịch sử ===== */
+    #panel-history h2 {
+      margin-top: 4px;
+    }
+
+    .history-empty {
+      font-size: 13px;
+      color: #6b7280;
+      font-style: italic;
+      margin-top: 8px;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 8px;
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    .history-table th,
+    .history-table td {
+      border: 1px solid var(--border);
+      padding: 6px 6px;
+      text-align: left;
+    }
+
+    .history-table th {
+      background: #e5e7eb;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .history-row-level {
+      font-weight: 600;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    @media (max-width: 680px) {
+      .page-shell {
+        margin: 8px auto 16px;
+        padding: 8px;
+      }
+
+      .hero {
+        padding: 14px 14px;
+      }
+
+      .card {
+        padding: 14px;
+        border-radius: 20px;
+      }
+
+      table,
+      .history-table {
+        font-size: 11px;
+      }
+
+      th,
+      td {
+        padding: 6px 4px;
+      }
+
+      .btn-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-content">
+        <div>
+          <div class="hero-title">Thang điểm FoMO sớm</div>
+          <p class="hero-sub">
+            Công cụ sàng lọc sớm mức độ Fear of Missing Out (FoMO) của học sinh
+            khi sử dụng mạng xã hội. Kết quả chỉ mang tính tham khảo, hỗ trợ giáo viên và phụ huynh.
+          </p>
+        </div>
+        <div class="hero-tags">
+          <div class="pill">
+            <span class="pill-dot"></span>
+            Trực tuyến &amp; miễn phí
+          </div>
+          <div class="pill">
+            10 câu hỏi · Thời gian làm: 3–5 phút
+          </div>
+          <div class="pill">
+            Dữ liệu lưu trên trình duyệt của học sinh
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CARD CHÍNH -->
+    <main class="card">
+      <div class="card-header-row">
+        <div>
+          <div class="card-title">Bài khảo sát FoMO</div>
+          <div class="card-subtitle">Chọn mức độ phù hợp với thói quen sử dụng mạng xã hội.</div>
+        </div>
+        <div class="mini-badge">
+          <span class="mini-dot"></span>
+          Phiên bản thử nghiệm lớp học
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button type="button" class="tab active" id="tab-test" onclick="switchTab('test')">
+          Bài test
+        </button>
+        <button type="button" class="tab" id="tab-history" onclick="switchTab('history')">
+          Lịch sử trả lời
+        </button>
+      </div>
+
+      <!-- PANEL: BÀI TEST -->
+      <section id="panel-test">
+        <form id="fomoForm">
+          <!-- Thông tin lớp -->
+          <div class="info-row">
+            <label for="studentClass">
+              Lớp:
+              <input
+                type="text"
+                id="studentClass"
+                class="info-input"
+                placeholder="VD: 10A1"
+              />
+            </label>
+            <div class="info-hint">
+              Không lưu tên học sinh, chỉ ghi theo lớp và thời gian làm bài.
+            </div>
+          </div>
+
+          <!-- A. Nhóm hành vi sử dụng mạng xã hội -->
+          <h2>
+            A. Nhóm hành vi sử dụng mạng xã hội
+            <span class="badge-section">Thói quen sử dụng</span>
+          </h2>
+          <p class="section-desc">
+            Chọn mức độ phù hợp với thói quen của bạn trong <strong>1–2 tháng gần đây</strong>.
+          </p>
+          <table>
+            <tr>
+              <th style="width: 40px">STT</th>
+              <th>Chỉ báo hành vi</th>
+              <th style="width: 115px">
+                Không bao giờ / rất hiếm<br /><span style="font-weight: 400">(0 điểm)</span>
+              </th>
+              <th style="width: 105px">
+                Thỉnh thoảng<br /><span style="font-weight: 400">(1 điểm)</span>
+              </th>
+              <th style="width: 125px">
+                Thường xuyên – hằng ngày<br /><span style="font-weight: 400">(2 điểm)</span>
+              </th>
+            </tr>
+            <tr>
+              <td class="center">1</td>
+              <td>Kiểm tra điện thoại liên tục</td>
+              <td class="center"><input type="radio" name="q1" value="0" /></td>
+              <td class="center"><input type="radio" name="q1" value="1" /></td>
+              <td class="center"><input type="radio" name="q1" value="2" /></td>
+            </tr>
+            <tr>
+              <td class="center">2</td>
+              <td>Xem Story với tần suất cao (&gt;20 lần/ngày)</td>
+              <td class="center"><input type="radio" name="q2" value="0" /></td>
+              <td class="center"><input type="radio" name="q2" value="1" /></td>
+              <td class="center"><input type="radio" name="q2" value="2" /></td>
+            </tr>
+            <tr>
+              <td class="center">3</td>
+              <td>Sử dụng mạng xã hội sau 23h</td>
+              <td class="center"><input type="radio" name="q3" value="0" /></td>
+              <td class="center"><input type="radio" name="q3" value="1" /></td>
+              <td class="center"><input type="radio" name="q3" value="2" /></td>
+            </tr>
+            <tr>
+              <td class="center">4</td>
+              <td>Dành nhiều thời gian trên mạng xã hội (&gt;3 giờ/ngày)</td>
+              <td class="center"><input type="radio" name="q4" value="0" /></td>
+              <td class="center"><input type="radio" name="q4" value="1" /></td>
+              <td class="center"><input type="radio" name="q4" value="2" /></td>
+            </tr>
+            <tr>
+              <td class="center">5</td>
+              <td>Kiểm tra ngay khi có thông báo</td>
+              <td class="center"><input type="radio" name="q5" value="0" /></td>
+              <td class="center"><input type="radio" name="q5" value="1" /></td>
+              <td class="center"><input type="radio" name="q5" value="2" /></td>
+            </tr>
+          </table>
+
+          <!-- B. Nhóm cảm xúc – nhận thức -->
+          <h2>
+            B. Nhóm cảm xúc – nhận thức
+            <span class="badge-section">Cảm xúc &amp; suy nghĩ</span>
+          </h2>
+          <table>
+            <tr>
+              <th style="width: 40px">STT</th>
+              <th>Chỉ báo cảm xúc – nhận thức</th>
+              <th style="width: 115px">
+                Không bao giờ / rất hiếm<br /><span style="font-weight: 400">(0 điểm)</span>
+              </th>
+              <th style="width: 105px">
+                Thỉnh thoảng<br /><span style="font-weight: 400">(1 điểm)</span>
+              </th>
+              <th style="width: 125px">
+                Thường xuyên<br /><span style="font-weight: 400">(2 điểm)</span>
+              </th>
+            </tr>
+            <tr>
+              <td class="center">6</td>
+              <td>Lo lắng / khó chịu khi mất mạng</td>
+              <td class="center"><input type="radio" name="q6" value="0" /></td>
+              <td class="center"><input type="radio" name="q6" value="1" /></td>
+              <td class="center"><input type="radio" name="q6" value="2" /></td>
+            </tr>
+            <tr>
+              <td class="center">7</td>
+              <td>Áp lực phải phản hồi tin nhắn ngay</td>
+              <td class="center"><input type="radio" name="q7" value="0" /></td>
+              <td class="center"><input type="radio" name="q7" value="1" /></td>
+              <td class="center"><input type="radio" name="q7" value="2" /></td>
+            </tr>
+            <tr>
+              <td class="center">8</td>
+              <td>So sánh bản thân với bạn bè trên mạng xã hội</td>
+              <td class="center"><input type="radio" name="q8" value="0" /></td>
+              <td class="center"><input type="radio" name="q8" value="1" /></td>
+              <td class="center"><input type="radio" name="q8" value="2" /></td>
+            </tr>
+            <tr>
+              <td class="center">9</td>
+              <td>Sợ bị tụt hậu / bỏ lỡ thông tin</td>
+              <td class="center"><input type="radio" name="q9" value="0" /></td>
+              <td class="center"><input type="radio" name="q9" value="1" /></td>
+              <td class="center"><input type="radio" name="q9" value="2" /></td>
+            </tr>
+          </table>
+
+          <!-- C. Nhóm hệ quả học tập -->
+          <h2>
+            C. Nhóm hệ quả học tập
+            <span class="badge-section">Ảnh hưởng đến việc học</span>
+          </h2>
+          <table>
+            <tr>
+              <th style="width: 40px">STT</th>
+              <th>Chỉ báo hệ quả</th>
+              <th style="width: 115px">
+                Không bao giờ / rất hiếm<br /><span style="font-weight: 400">(0 điểm)</span>
+              </th>
+              <th style="width: 105px">
+                Thỉnh thoảng<br /><span style="font-weight: 400">(1 điểm)</span>
+              </th>
+              <th style="width: 125px">
+                Thường xuyên – hằng ngày<br /><span style="font-weight: 400">(2 điểm)</span>
+              </th>
+            </tr>
+            <tr>
+              <td class="center">10</td>
+              <td>Xao nhãng việc học do sử dụng mạng xã hội</td>
+              <td class="center"><input type="radio" name="q10" value="0" /></td>
+              <td class="center"><input type="radio" name="q10" value="1" /></td>
+              <td class="center"><input type="radio" name="q10" value="2" /></td>
+            </tr>
+          </table>
+
+          <div class="scale-note">
+            <strong>Cách chấm điểm:</strong><br />
+            – Không bao giờ / rất hiếm (0–1 lần/tuần): <strong>0 điểm</strong><br />
+            – Thỉnh thoảng (1–3 lần/tuần): <strong>1 điểm</strong><br />
+            – Thường xuyên (hằng ngày hoặc nhiều lần/ngày): <strong>2 điểm</strong><br /><br />
+            <strong>Tổng điểm tối đa: 20</strong>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" onclick="calculateScore()">
+              🧠 Tính điểm FoMO &amp; lưu lịch sử
+            </button>
+            <button type="button" class="btn btn-ghost" onclick="resetForm()">
+              🔄 Làm lại từ đầu
+            </button>
+          </div>
+        </form>
+
+        <div id="result" class="result">
+          <div class="result-title">
+            <span class="dot"></span>
+            Kết quả FoMO sớm
+            <span class="badge-pill-small">Tham khảo sàng lọc sớm</span>
+          </div>
+          <div id="scoreText" class="result-score"></di
